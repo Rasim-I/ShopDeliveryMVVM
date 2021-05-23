@@ -17,9 +17,6 @@ namespace ShopLab4
         {
             var app = new App();
             app.InitializeComponent();
-            ShopData.Storehouse();
-
-            IData shopData = new ShopData();
             
             MainWindow mainWindow = new MainWindow();
             WindowViewModel windowViewModel = new WindowViewModel();

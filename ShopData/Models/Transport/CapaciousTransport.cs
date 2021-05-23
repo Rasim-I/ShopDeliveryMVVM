@@ -12,5 +12,13 @@ namespace Shop.Models
             capacity = EnumSet.Capacity.large;
             speed = EnumSet.Speed.slow;
         }
+
+        public CapaciousTransport() { }
+
+        public override bool isCompatible(Product product)
+        {
+                return true;
+        }
+
     }
 }

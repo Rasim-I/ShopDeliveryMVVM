@@ -10,41 +10,41 @@ namespace Shop.Data
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
-        protected readonly DeliveryContext Context; //readonly?
+        protected readonly DeliveryContext db; //readonly?
 
         public Repository(DeliveryContext context)
         {
-            Context = context;
+            db = context;
         }
 
         public void Create(TEntity entity)
         {
-            Context.Set<TEntity>().Add(entity);
+            db.Set<TEntity>().Add(entity);
         }
 
         public void Delete(TEntity entity)
         {
-            Context.Set<TEntity>().Remove(entity);
+            db.Set<TEntity>().Remove(entity);
         }
 
         public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
         {
-            return Context.Set<TEntity>().Where(predicate);
+            return db.Set<TEntity>().Where(predicate);
         }
 
-        public TEntity Get(int id)
+        public TEntity Get(Guid id)
         {
-            return Context.Set<TEntity>().Find(id);
+            return db.Set<TEntity>().Find(id);
         }
 
         public IEnumerable<TEntity> GetAll()
         {
-            return Context.Set<TEntity>().ToList();
+            return db.Set<TEntity>().ToList();
         }
 
         public void Update(TEntity entity)
         {
-            throw new NotImplementedException();
+            db.Entry(entity).State = System.Data.Entity.EntityState.Modified;
         }
     }
 }

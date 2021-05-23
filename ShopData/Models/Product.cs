@@ -11,9 +11,9 @@ namespace Shop
         }
 
 
-        public Size size { get; }
-        public Type type { get; }
-        public int weight { get; }
+        public Size size { get; set; }
+        public Type type { get; set; }
+        public int weight { get; set; }
         public int quantity { get; set; }
 
 
@@ -26,5 +26,7 @@ namespace Shop
             this.size = size;
         }
 
+
+        public Product() { }
     }
 }

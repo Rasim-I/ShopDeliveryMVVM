@@ -6,13 +6,13 @@ namespace Shop
     public class Order : Base
     {
 
-        public DateTime order_time;
+        public DateTime order_time { get; set; }
 
         public Transport transport { get; set; }
         public Place place { get; set; }
         public Product product { get; set; }
 
-        public String CustomerName { get; }
+        public string CustomerName { get; set; }
 
         public DateTime EstOrdDeliveryTime { get; set; }
 
@@ -38,17 +38,19 @@ namespace Shop
                 return 1;
         }
 
-        public Order(String Customer_Name, Transport transport, Place place, Product product)
+        public Order(string Customer_Name, Transport transport, Place place, Product product)
         {
             order_time = DateTime.Now;
 
             this.transport = transport;
             this.place = place;
             this.product = product;
-            this.CustomerName = Customer_Name;
+            CustomerName = Customer_Name;
             EstOrdDeliveryTime = DateTime.Now + CalculateTime(order_time);
             EstOrdDeliveryTime.Add(TimeSpan.FromDays(3));
         }
 
+
+        public Order() { }
     }
 }

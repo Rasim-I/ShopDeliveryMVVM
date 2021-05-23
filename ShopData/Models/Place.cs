@@ -17,5 +17,10 @@
             this.name = name;
         }
 
+        public Place()
+        {
+
+        }
+
     }
 }

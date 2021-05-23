@@ -12,5 +12,16 @@ namespace Shop.Models
             capacity = EnumSet.Capacity.low;
             speed = EnumSet.Speed.fast;
         }
+
+        public FastTransport() { }
+
+        public override bool isCompatible(Product product)
+        {
+            if (product.type == EnumSet.Type.furniture || product.size > EnumSet.Size.little)
+                return false;
+            else
+                return true;
+        }
+
     }
 }

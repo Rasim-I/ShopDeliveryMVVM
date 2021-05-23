@@ -14,7 +14,11 @@ namespace ShopLab4.ViewModel
 {
     class OrdersPageViewModel : ViewModelBase
     {
-        IData _shopData = new ShopData();
+
+        static DeliveryContext context = new DeliveryContext();
+        IUnitOfWork unitOfWork = new UnitOfWork(context);
+
+        //IData _shopData = new ShopData();
 
         //public OrdersPageViewModel(IData shopData)
         //{
@@ -28,7 +32,7 @@ namespace ShopLab4.ViewModel
 
         public OrdersPageViewModel()
         {
-            Orders = new ObservableCollection<Order>(_shopData.Orders());
+            Orders = new ObservableCollection<Order>(unitOfWork.Orders.OrdersWithReferences());
           
         }
 

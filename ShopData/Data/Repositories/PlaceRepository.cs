@@ -14,7 +14,7 @@ namespace Shop.Data
 
         public IEnumerable<Place> GetPopularPlaces(int count)
         {
-            return Context.Places.OrderByDescending(p => p.distance).Take(count).ToList();
+            return db.Places.OrderByDescending(p => p.distance).Take(count).ToList();
         }
 
 

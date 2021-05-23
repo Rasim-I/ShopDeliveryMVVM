@@ -8,7 +8,7 @@ namespace Shop.Data
     public interface IRepository<TEntity> where TEntity : class
     {
         IEnumerable<TEntity> GetAll();
-        TEntity Get(int id);
+        TEntity Get(Guid id);
 
         IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
 

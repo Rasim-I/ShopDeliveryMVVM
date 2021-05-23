@@ -15,14 +15,9 @@ namespace ShopLab4.ViewModel
 {
     internal class MainPageViewModel : ViewModelBase
     {
-
-        IData _shopData = new ShopData();  //
-
-        //public MainPageViewModel(IData shopData)
-        //{
-        //    this._shopData = shopData;
-        //}
-
+        static DeliveryContext context = new DeliveryContext();    //
+        private IUnitOfWork _unitOfWork = new UnitOfWork(context); //
+        
 
         #region OrderProcessing
 
@@ -37,71 +32,65 @@ namespace ShopLab4.ViewModel
             Order order = new Order(name, transport, postOffice, orderedProduct);
 
 
-
             DateTime dateTimeWithDelay = order.EstOrdDeliveryTime + TimeSpan.FromHours(delay);  //
             order.EstOrdDeliveryTime = dateTimeWithDelay;                                       //
 
-
+            _unitOfWork.Orders.Create(order);
 
 
             transport.Transit(order.EstOrdDeliveryTime - DateTime.Now);
 
+            _unitOfWork.Transports.Update(transport);
+
             UpdateProductQuantity(orderedProduct);
+
+            _unitOfWork.Products.Update(orderedProduct);
+
             Console.WriteLine(orderedProduct.quantity);
-            _shopData.SaveToDB(order);
+            
 
             OrderDeliveryTimer();
+            _unitOfWork.Save();
         }
 
 
         void UpdateProductQuantity(Product product)
         {
             if (product.quantity > 0)
+            {
                 product.quantity -= 1;
+                _unitOfWork.Products.Update(product);
+            }
             else
-                _shopData.DeleteFromDB(product);
+            {
+                _unitOfWork.Products.Delete(product);
+            }
+            _unitOfWork.Save();    
         }
 
 
         public Product FindProduct(Guid ID)
         {
-            return _shopData.Products().Find(p => p.Id == ID);
+            return _unitOfWork.Products.Get(ID);
         }
 
 
         public Place FindPostOffice(Guid ID)
         {
-            return _shopData.PostOffice().Find(pst => pst.Id == ID);
+            return _unitOfWork.Places.Get(ID);
         }
 
-
-        public List<Transport> FindCompatibleTransport(Product product)
-        {
-            if (product.type == Type.furniture)
-            {
-                return _shopData.Transports().FindAll(t => t.capacity > Capacity.medium);
-            }
-            else if (product.size >= Size.medium)
-                return _shopData.Transports().FindAll(t => t.capacity >= Capacity.medium);
-            else
-                return _shopData.Transports();
-        }
 
 
         public Transport FindFreeTransport(Product product)
         {
-            List<Transport> CompatibleTransport = FindCompatibleTransport(product);
-            try
-            {
-                Transport transport = CompatibleTransport.Find(t => t.state == State.free);
-                if (transport == null)
-                    throw new Exception();
-                return transport;
-            }
-            catch (Exception)
-            {
+            List<Transport> CompatibleTransport = _unitOfWork.Transports.GetAll().Where(t => t.isCompatible(product)).ToList();
+
+            if (CompatibleTransport.Find(t => t.state == State.free) != null)
+                return CompatibleTransport.Find(t => t.state == State.free);
+            else
                 return CompatibleTransport.OrderBy(t => (int)t.TimeUntilFree.TotalHours).First();
-            }
+            
         }
 
         #region Timer
@@ -192,9 +181,10 @@ namespace ShopLab4.ViewModel
 
         public MainPageViewModel()
         {
+           // this._unitOfWork = unitOfWork;
             CreateOrderCommand = new ActionCommand(OnCreateOrderExecuted, CanCreateOrder);
-            Products = new ObservableCollection<Product>(_shopData.Products());
-            Offices = new ObservableCollection<Place>(_shopData.PostOffice());
+            Products = new ObservableCollection<Product>(_unitOfWork.Products.GetAll());
+            Offices = new ObservableCollection<Place>(_unitOfWork.Places.GetAll());
         }
 
 

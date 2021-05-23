@@ -18,28 +18,24 @@ namespace Shop
         {
             state = State.transit;
             TimeUntilFree += time;
-            //deliveryTime - DAteTime.now
         }
 
 
-
-        //public int CompareTo(object obj)
-        //{
-        //    Transport t = obj as Transport;
-        //    if (t != null)
-        //        return this.TimeUntilFree.CompareTo(t.TimeUntilFree);
-        //    else
-        //        throw new Exception("Can't compare");
-        //}
 
         public Transport(string name)
         {
             this.name = name;
             state = State.free;
-            //this.speed = speed;
-            //this.capacity = capacity;
+
 
         }
 
+        public virtual bool isCompatible(Product product)
+        {
+                return true;
+        }
+
+
+        public Transport() { }
     }
 }
