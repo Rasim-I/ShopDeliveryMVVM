@@ -44,45 +44,37 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\DeliveryContext.cs" />
-    <Compile Include="Data\Repositories\IRepositories\IOrderRepository.cs" />
-    <Compile Include="Data\Repositories\IRepositories\IPlaceRepository.cs" />
-    <Compile Include="Data\Repositories\IRepositories\IProductRepository.cs" />
-    <Compile Include="Data\Repositories\IRepositories\IRepository.cs" />
-    <Compile Include="Data\IUnitOfWork.cs" />
-    <Compile Include="Data\Repositories\IRepositories\ITransportRepository.cs" />
-    <Compile Include="Data\Repositories\OrderRepository.cs" />
-    <Compile Include="Data\Repositories\PlaceRepository.cs" />
-    <Compile Include="Data\Repositories\ProductRepository.cs" />
-    <Compile Include="Data\Repositories\Repository.cs" />
-    <Compile Include="Data\Repositories\TransportRepository.cs" />
-    <Compile Include="Data\UnitOfWork.cs" />
-    <Compile Include="Migrations\202105181333043_InitialCreate.cs" />
-    <Compile Include="Migrations\202105181333043_InitialCreate.designer.cs">
-      <DependentUpon>202105181333043_InitialCreate.cs</DependentUpon>
+    <Compile Include="DeliveryContext.cs" />
+    <Compile Include="Entities\Enums\OrderState.cs" />
+    <Compile Include="Entities\TransportTypes\BalancedTransport.cs" />
+    <Compile Include="Entities\TransportTypes\CapaciousTransport.cs" />
+    <Compile Include="Entities\Enums\Capacity.cs" />
+    <Compile Include="Entities\Enums\Size.cs" />
+    <Compile Include="Entities\Enums\Speed.cs" />
+    <Compile Include="Entities\Enums\State.cs" />
+    <Compile Include="Entities\Enums\Type.cs" />
+    <Compile Include="Entities\TransportTypes\FastTransport.cs" />
+    <Compile Include="Entities\Order.cs" />
+    <Compile Include="Entities\Place.cs" />
+    <Compile Include="Entities\Product.cs" />
+    <Compile Include="Entities\Transport.cs" />
+    <Compile Include="IRepositories\IOrderRepository.cs" />
+    <Compile Include="IRepositories\IPlaceRepository.cs" />
+    <Compile Include="IRepositories\IProductRepository.cs" />
+    <Compile Include="IRepositories\IRepository.cs" />
+    <Compile Include="IUnitOfWork.cs" />
+    <Compile Include="IRepositories\ITransportRepository.cs" />
+    <Compile Include="Migrations\202106191928239_TransportFix.cs" />
+    <Compile Include="Migrations\202106191928239_TransportFix.designer.cs">
+      <DependentUpon>202106191928239_TransportFix.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202105181622071_OrderAltering.cs" />
-    <Compile Include="Migrations\202105181622071_OrderAltering.designer.cs">
-      <DependentUpon>202105181622071_OrderAltering.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202105181716126_OrderDate+Seed.cs" />
-    <Compile Include="Migrations\202105181716126_OrderDate+Seed.designer.cs">
-      <DependentUpon>202105181716126_OrderDate+Seed.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202105181852277_TypeCorrection.cs" />
-    <Compile Include="Migrations\202105181852277_TypeCorrection.designer.cs">
-      <DependentUpon>202105181852277_TypeCorrection.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Repositories\OrderRepository.cs" />
+    <Compile Include="Repositories\PlaceRepository.cs" />
+    <Compile Include="Repositories\ProductRepository.cs" />
+    <Compile Include="Repositories\Repository.cs" />
+    <Compile Include="Repositories\TransportRepository.cs" />
+    <Compile Include="UnitOfWork.cs" />
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\Base.cs" />
-    <Compile Include="Models\EnumSet.cs" />
-    <Compile Include="Models\Order.cs" />
-    <Compile Include="Models\Place.cs" />
-    <Compile Include="Models\Product.cs" />
-    <Compile Include="Models\Transport.cs" />
-    <Compile Include="Models\Transport\BalancedTransport.cs" />
-    <Compile Include="Models\Transport\CapaciousTransport.cs" />
-    <Compile Include="Models\Transport\FastTransport.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -98,17 +90,14 @@
     <Reference Include="System.Data.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202105181333043_InitialCreate.resx">
-      <DependentUpon>202105181333043_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202105181622071_OrderAltering.resx">
-      <DependentUpon>202105181622071_OrderAltering.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202105181716126_OrderDate+Seed.resx">
-      <DependentUpon>202105181716126_OrderDate+Seed.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202105181852277_TypeCorrection.resx">
-      <DependentUpon>202105181852277_TypeCorrection.cs</DependentUpon>
+    <ProjectReference Include="..\ShopModels\ShopModels.csproj">
+      <Project>{56a7452f-862e-4520-ab4c-688d4f851e5f}</Project>
+      <Name>ShopModels</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\202106191928239_TransportFix.resx">
+      <DependentUpon>202106191928239_TransportFix.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -2,13 +2,14 @@
 {
     using Shop;
     using Shop.Models;
+    using ShopData.Entities;
+    using ShopData.Entities.Enums;
     using System;
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
-    using static Shop.Models.EnumSet;
-    using Type = Shop.Models.EnumSet.Type;
+    using Type = Entities.Enums.Type;
 
     internal sealed class Configuration : DbMigrationsConfiguration<Shop.Data.DeliveryContext>
     {
@@ -31,24 +32,25 @@
             List<Order> StoredOrders = new List<Order>();
 
 
-            StoredProducts.Add(new Product("Frige", Type.electronics, 80, Size.big, 1));
-            StoredProducts.Add(new Product("Clock", Type.electronics, 3, Size.little, 3));
-            StoredProducts.Add(new Product("Table", Type.furniture, 15, Size.medium, 4));
-            StoredProducts.Add(new Product("Chair", Type.furniture, 5, Size.medium, 5));
-            StoredProducts.Add(new Product("Pills", Type.meds, 1, Size.tiny, 5));
-            StoredProducts.Add(new Product("Pizza", Type.food, 1, Size.little, 2));
-
-
-            StoredTransports.Add(new CapaciousTransport("Car-1"));
-            StoredTransports.Add(new BalancedTransport("Car-2"));
-            StoredTransports.Add(new FastTransport("Car-3"));
+            StoredProducts.Add(new Product() { Id = Guid.NewGuid(), name = "Frige", type = Type.electronics, Weight = 80, size = Size.big, Quantity = 1 });
+            StoredProducts.Add(new Product() { Id = Guid.NewGuid(), name = "Clock", type = Type.electronics, Weight = 3, size = Size.little, Quantity = 3 });
+            StoredProducts.Add(new Product() { Id = Guid.NewGuid(),  name = "Table", type = Type.furniture, Weight = 15, size = Size.medium, Quantity = 4 });
+            StoredProducts.Add(new Product() { Id = Guid.NewGuid(), name = "Chair", type = Type.furniture, Weight = 5, size = Size.medium, Quantity = 5 });
+            StoredProducts.Add(new Product() { Id = Guid.NewGuid(), name = "Pills", type = Type.meds, Weight = 1, size = Size.tiny, Quantity = 5 });
+            StoredProducts.Add(new Product() { Id = Guid.NewGuid(), name = "Pizza", type = Type.food, Weight = 1, size = Size.little, Quantity = 2 });
 
 
 
-            StoredPostOffice.Add(new Place("Office-2", 100));
-            StoredPostOffice.Add(new Place("Office-3", 400));
-            StoredPostOffice.Add(new Place("Office-4", 1500));
-            StoredPostOffice.Add(new Place("Office-5", 234));
+            StoredTransports.Add(new BalancedTransport() { Id = Guid.NewGuid(), name = "Car-1", state = State.free, TimeUntilFree = TimeSpan.Zero.Ticks});
+            StoredTransports.Add(new CapaciousTransport() { Id = Guid.NewGuid(), name = "Car-2", state = State.free, TimeUntilFree = TimeSpan.Zero.Ticks });
+            StoredTransports.Add(new FastTransport() { Id = Guid.NewGuid(), name = "Car-3", state = State.free, TimeUntilFree = TimeSpan.Zero.Ticks });
+
+
+
+            StoredPostOffice.Add(new Place() { Id = Guid.NewGuid(), name = "Office-2", distance = 100 });
+            StoredPostOffice.Add(new Place() { Id = Guid.NewGuid(), name = "Office-3", distance = 400 });
+            StoredPostOffice.Add(new Place() { Id = Guid.NewGuid(), name = "Office-4", distance = 1500 });
+            StoredPostOffice.Add(new Place() { Id = Guid.NewGuid(), name = "Office-5", distance = 234 });
 
             foreach(Place p in StoredPostOffice)
             {
