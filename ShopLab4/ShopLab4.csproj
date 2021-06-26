@@ -170,6 +170,14 @@
       <Project>{ee5c72be-84ee-4156-814b-12668e4b7e67}</Project>
       <Name>ShopDAL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ShopLogic\ShopLogic.csproj">
+      <Project>{4B3FD8A3-D86D-4270-AFB9-04AE6D39DC6A}</Project>
+      <Name>ShopLogic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ShopModels\ShopModels.csproj">
+      <Project>{56a7452f-862e-4520-ab4c-688d4f851e5f}</Project>
+      <Name>ShopModels</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -10,88 +10,32 @@ using System.Threading;
 using System.Windows.Input;
 using static Shop.Models.EnumSet;
 using Type = Shop.Models.EnumSet.Type;
+using ShopData.Entities;
+using ShopLogic.Abstraction.IServices;
+using ShopLogic.Abstraction.IMappers;
+using ShopLogic.Implementation.Mappers;
+using ShopLogic.Implementation.Services;
 
 namespace ShopLab4.ViewModel
 {
     internal class MainPageViewModel : ViewModelBase
     {
-        static DeliveryContext context = new DeliveryContext();    //
-        private IUnitOfWork _unitOfWork = new UnitOfWork(context); //
+        private DeliveryContext context;    //
+        private IUnitOfWork _unitOfWork;    //
+        private IMapper<Order, OrderModel> _orderMapper = new OrderMapper();
+        private IMapper<Transport, TransportModel> _transportMapper = new TransportMapper();
+        private IMapper<Product, ProductModel> _productMapper = new ProductMapper();
+        private IMapper<Place, PlaceModel> _placeMapper = new PlaceMapper();
+        private IOrderService _orderService;
+        private ITransportService _transportService;
+        private IProductService _productService;
+        private IPlaceService _placeService;
         
 
-        #region OrderProcessing
+        #region OrderDelay
 
         static int delay = 0;
 
-        public void MakeOrder(Guid productId, Guid placeId, string name)
-        {
-
-            Product orderedProduct = FindProduct(productId); 
-            Place postOffice = FindPostOffice(placeId);  
-            Transport transport = FindFreeTransport(orderedProduct);
-            Order order = new Order(name, transport, postOffice, orderedProduct);
-
-
-            DateTime dateTimeWithDelay = order.EstOrdDeliveryTime + TimeSpan.FromHours(delay);  //
-            order.EstOrdDeliveryTime = dateTimeWithDelay;                                       //
-
-            _unitOfWork.Orders.Create(order);
-
-
-            transport.Transit(order.EstOrdDeliveryTime - DateTime.Now);
-
-            _unitOfWork.Transports.Update(transport);
-
-            UpdateProductQuantity(orderedProduct);
-
-            _unitOfWork.Products.Update(orderedProduct);
-
-            Console.WriteLine(orderedProduct.quantity);
-            
-
-            OrderDeliveryTimer();
-            _unitOfWork.Save();
-        }
-
-
-        void UpdateProductQuantity(Product product)
-        {
-            if (product.quantity > 0)
-            {
-                product.quantity -= 1;
-                _unitOfWork.Products.Update(product);
-            }
-            else
-            {
-                _unitOfWork.Products.Delete(product);
-            }
-            _unitOfWork.Save();    
-        }
-
-
-        public Product FindProduct(Guid ID)
-        {
-            return _unitOfWork.Products.Get(ID);
-        }
-
-
-        public Place FindPostOffice(Guid ID)
-        {
-            return _unitOfWork.Places.Get(ID);
-        }
-
-
-
-        public Transport FindFreeTransport(Product product)
-        {
-            List<Transport> CompatibleTransport = _unitOfWork.Transports.GetAll().Where(t => t.isCompatible(product)).ToList();
-
-            if (CompatibleTransport.Find(t => t.state == State.free) != null)
-                return CompatibleTransport.Find(t => t.state == State.free);
-            else
-                return CompatibleTransport.OrderBy(t => (int)t.TimeUntilFree.TotalHours).First();
-            
-        }
 
         #region Timer
         void OrderDeliveryTimer()
@@ -115,9 +59,6 @@ namespace ShopLab4.ViewModel
         #endregion
 
 
-
-
-
         #endregion
 
 
@@ -129,8 +70,9 @@ namespace ShopLab4.ViewModel
 
         private void OnCreateOrderExecuted(object p)
         {
-
-            MakeOrder(SelectedProduct.Id, SelectedOffice.Id, EnteredName);
+            //OrderService.MakeORder
+            _orderService.MakeOrder(SelectedProduct, SelectedOffice, EnteredName, delay);
+            OrderDeliveryTimer();
             SelectedOffice = null;
             SelectedProduct = null;
             EnteredName = null;
@@ -139,11 +81,11 @@ namespace ShopLab4.ViewModel
         #endregion
 
 
-        private Product _selectedProduct;
+        private ProductModel _selectedProduct;
         private string _enteredName;
-        private Place _selectedOffice;
+        private PlaceModel _selectedOffice;
 
-        public Product SelectedProduct
+        public ProductModel SelectedProduct
         {
             get { return _selectedProduct; }
             set
@@ -153,7 +95,7 @@ namespace ShopLab4.ViewModel
             }
         }
 
-        public Place SelectedOffice
+        public PlaceModel SelectedOffice
         {
             get { return _selectedOffice; }
             set
@@ -173,18 +115,24 @@ namespace ShopLab4.ViewModel
             }
         }
 
-        public ObservableCollection<Product> Products { get; set; }
+        public ObservableCollection<ProductModel> Products { get; set; }
 
-        public ObservableCollection<Place> Offices { get; }
+        public ObservableCollection<PlaceModel> Offices { get; }
 
 
 
         public MainPageViewModel()
         {
-           // this._unitOfWork = unitOfWork;
+            context = new DeliveryContext();
+            _unitOfWork = new UnitOfWork(context);
+            // this._unitOfWork = unitOfWork;
+            _transportService = new TransportService(_unitOfWork, _transportMapper);
+            _productService = new ProductService(_unitOfWork, _productMapper);
+            _orderService = new OrderService(_unitOfWork, _orderMapper, _transportService, _productService);
+            _placeService = new PlaceService(_unitOfWork, _placeMapper);
             CreateOrderCommand = new ActionCommand(OnCreateOrderExecuted, CanCreateOrder);
-            Products = new ObservableCollection<Product>(_unitOfWork.Products.GetAll());
-            Offices = new ObservableCollection<Place>(_unitOfWork.Places.GetAll());
+            Products = new ObservableCollection<ProductModel>(_productService.GetProducts());
+            Offices = new ObservableCollection<PlaceModel>(_placeService.GetPlaces());
         }
 
 

@@ -47,6 +47,7 @@
                 <DataGridTextColumn Header="Estimate order delivery time" Binding="{Binding EstOrdDeliveryTime}"/>
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}"/>
                 <DataGridTextColumn Header="Transport" Binding="{Binding transport.name}"/>
+                <DataGridTextColumn Header="State" Binding="{Binding State}"/>
 
             </DataGrid.Columns>
         </DataGrid>
